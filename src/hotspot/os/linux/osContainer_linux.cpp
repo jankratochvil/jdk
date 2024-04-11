@@ -76,6 +76,7 @@ void OSContainer::init() {
   const char *reason;
   bool any_mem_cpu_limit_present = false;
   bool ctrl_ro = cgroup_subsystem->is_containerized();
+ctrl_ro = false;
   if (ctrl_ro) {
     // in-container case
     reason = " because all controllers are mounted read-only (container case)";
