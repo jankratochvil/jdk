@@ -31,11 +31,6 @@ package jdk.internal.platform;
  */
 public interface CgroupSubsystem extends Metrics {
 
-
-    default boolean isContainerized() {
-        return false; // This default impl is never used
-    }
-
     /**
      * Returned for metrics of type long if the underlying implementation
      * has determined that no limit is being imposed.

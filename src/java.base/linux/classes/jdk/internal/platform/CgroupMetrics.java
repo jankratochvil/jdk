@@ -36,11 +36,6 @@ public class CgroupMetrics implements Metrics {
     }
 
     @Override
-    public boolean isContainerized() {
-        return isContainerized0();
-    }
-
-    @Override
     public String getProvider() {
         return subsystem.getProvider();
     }
@@ -199,7 +194,6 @@ public class CgroupMetrics implements Metrics {
     }
 
     private static native boolean isUseContainerSupport();
-    private static native boolean isContainerized0();
     private static native long getTotalMemorySize0();
     private static native long getTotalSwapSize0();
 

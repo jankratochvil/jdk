@@ -33,22 +33,19 @@ class CgroupV2Controller: public CgroupController {
     char *_mount_path;
     /* The cgroup path for the controller */
     char *_cgroup_path;
-    bool _read_only;
 
     /* Constructed full path to the subsystem directory */
     char *_path;
     static char* construct_path(char* mount_path, char *cgroup_path);
 
   public:
-    CgroupV2Controller(char * mount_path, char *cgroup_path, bool ro) {
+    CgroupV2Controller(char * mount_path, char *cgroup_path) {
       _mount_path = mount_path;
       _cgroup_path = os::strdup(cgroup_path);
       _path = construct_path(mount_path, cgroup_path);
-      _read_only = ro;
     }
 
     char *subsystem_path() { return _path; }
-    bool is_read_only() { return _read_only; }
 };
 
 class CgroupV2Subsystem: public CgroupSubsystem {
@@ -90,7 +87,6 @@ class CgroupV2Subsystem: public CgroupSubsystem {
     jlong pids_max();
     jlong pids_current();
 
-    bool is_containerized();
     void print_version_specific_info(outputStream* st);
 
     const char * container_type() {

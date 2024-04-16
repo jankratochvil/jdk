@@ -150,9 +150,6 @@ JVM_ActiveProcessorCount(void);
 JNIEXPORT jboolean JNICALL
 JVM_IsUseContainerSupport(void);
 
-JNIEXPORT jboolean JNICALL
-JVM_IsContainerized(void);
-
 JNIEXPORT void * JNICALL
 JVM_LoadZipLibrary();
 

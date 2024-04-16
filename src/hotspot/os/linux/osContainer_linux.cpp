@@ -73,26 +73,18 @@ void OSContainer::init() {
    * that limits enforced by other means (e.g. systemd slice) are properly
    * detected.
    */
+  // We can be in one of two cases:
+  //  1.) On a physical Linux system without any limit
+  //  2.) On a physical Linux system with a limit enforced by other means (like systemd slice)
+  bool any_mem_cpu_limit_present = cgroup_subsystem->memory_limit_in_bytes() > 0 ||
+                                   os::Linux::active_processor_count() != cgroup_subsystem->active_processor_count();
   const char *reason;
-  bool any_mem_cpu_limit_present = false;
-  bool ctrl_ro = cgroup_subsystem->is_containerized();
-ctrl_ro = false;
-  if (ctrl_ro) {
-    // in-container case
-    reason = " because all controllers are mounted read-only (container case)";
+  if (any_mem_cpu_limit_present) {
+    reason = " because either a cpu or a memory limit is present";
   } else {
-    // We can be in one of two cases:
-    //  1.) On a physical Linux system without any limit
-    //  2.) On a physical Linux system with a limit enforced by other means (like systemd slice)
-    any_mem_cpu_limit_present = cgroup_subsystem->memory_limit_in_bytes() > 0 ||
-                                     os::Linux::active_processor_count() != cgroup_subsystem->active_processor_count();
-    if (any_mem_cpu_limit_present) {
-      reason = " because either a cpu or a memory limit is present";
-    } else {
-      reason = " because no cpu or memory limit is present";
-    }
+    reason = " because no cpu or memory limit is present";
   }
-  _is_containerized = ctrl_ro || any_mem_cpu_limit_present;
+  _is_containerized = any_mem_cpu_limit_present;
   log_debug(os, container)("OSContainer::init: is_containerized() = %s%s",
                                                             _is_containerized ? "true" : "false",
                                                             reason);

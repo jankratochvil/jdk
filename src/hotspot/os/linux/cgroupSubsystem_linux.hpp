@@ -74,7 +74,6 @@ typedef char * cptr;
 class CgroupController: public CHeapObj<mtInternal> {
   public:
     virtual char *subsystem_path() = 0;
-    virtual bool is_read_only() = 0;
 };
 
 PRAGMA_DIAG_PUSH
@@ -270,7 +269,6 @@ class CgroupSubsystem: public CHeapObj<mtInternal> {
     virtual jlong memory_max_usage_in_bytes() = 0;
     virtual jlong rss_usage_in_bytes() = 0;
     virtual jlong cache_usage_in_bytes() = 0;
-    virtual bool is_containerized() = 0;
 
     virtual char * cpu_cpuset_cpus() = 0;
     virtual char * cpu_cpuset_memory_nodes() = 0;
@@ -293,7 +291,6 @@ class CgroupInfo : public StackObj {
     char* _name;
     int _hierarchy_id;
     bool _enabled;
-    bool _is_ro;            // whether or not the mount path is mounted read-only
     bool _data_complete;    // indicating cgroup v1 data is complete for this controller
     char* _cgroup_path;     // cgroup controller path from /proc/self/cgroup
     char* _root_mount_path; // root mount path from /proc/self/mountinfo. Unused for cgroup v2
@@ -304,7 +301,6 @@ class CgroupInfo : public StackObj {
       _name = nullptr;
       _hierarchy_id = -1;
       _enabled = false;
-      _is_ro = false;
       _data_complete = false;
       _cgroup_path = nullptr;
       _root_mount_path = nullptr;
@@ -336,8 +332,7 @@ class CgroupSubsystemFactory: AllStatic {
                                      int controller,
                                      const char* name,
                                      char* mount_path,
-                                     char* root_path,
-                                     bool read_only);
+                                     char* root_path);
     // Determine the cgroup type (version 1 or version 2), given
     // relevant paths to files. Sets 'flags' accordingly.
     static bool determine_type(CgroupInfo* cg_infos,
