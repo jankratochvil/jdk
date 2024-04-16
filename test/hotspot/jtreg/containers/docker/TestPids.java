@@ -149,9 +149,6 @@ public class TestPids {
             opts.addDockerOpts("--pids-limit="+value);
         }
 
-        // is_containerized() would return false as it does not test the PIDs limit.
-        opts.addDockerOpts("--memory=10G");
-
         List<String> lines = Common.run(opts).asLines();
         if (value.equals("Unlimited")) {
             checkResult(lines, "Maximum number of tasks is: ", "max");
