@@ -79,6 +79,9 @@ public class TestMisc {
         DockerRunOptions opts = Common.newOpts(imageName, "CheckContainerized");
         Common.addWhiteBoxOpts(opts);
 
+        // is_containerized() would return false as it did not find any limit.
+        opts.addDockerOpts("--memory=10G");
+
         Common.run(opts)
             .shouldContain(CheckContainerized.INSIDE_A_CONTAINER);
     }
@@ -90,6 +93,9 @@ public class TestMisc {
         DockerRunOptions opts = Common.newOpts(imageName, "PrintContainerInfo");
         Common.addWhiteBoxOpts(opts);
 
+        // is_containerized() would return false as it did not find any limit.
+        opts.addDockerOpts("--memory=10G");
+
         checkContainerInfo(Common.run(opts));
     }
 
@@ -98,6 +104,9 @@ public class TestMisc {
 
         DockerRunOptions opts = Common.newOpts(imageName, "PrintContainerInfo").addJavaOpts("-XX:ActiveProcessorCount=2");
         Common.addWhiteBoxOpts(opts);
+
+        // is_containerized() would return false as it did not find any limit.
+        opts.addDockerOpts("--memory=10G");
 
         OutputAnalyzer out = Common.run(opts);
         out.shouldContain("but overridden by -XX:ActiveProcessorCount 2");

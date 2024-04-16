@@ -153,6 +153,9 @@ public class TestCPUSets {
         DockerRunOptions opts = commonOpts();
         opts.addDockerOpts("--cpuset-cpus=" + value);
 
+        // is_containerized() would return false as it does not test the cpu limit.
+        opts.addDockerOpts("--memory=10G");
+
         List<String> lines = Common.run(opts).asLines();
         checkResult(lines, "cpuset.cpus is:", value);
     }
